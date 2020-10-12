@@ -1,0 +1,46 @@
+version: '3.7'
+services:
+  database:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_solaris
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass_user
+    ports:
+      - 3360:3306
+    volumes:
+      - ./database/schemas:/var/lib/mysql
+    networks:
+      solaris_house:
+        ipv4_address: 172.25.100.9
+
+  backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 8084:80
+    volumes:
+      - ./:/var/www
+      - ./public:/var/www/html
+    networks:
+      solaris_house:
+        ipv4_address: 172.25.100.10
+    depends_on:
+      - database
+
+volumes:
+  .:
+  database:
+
+networks:
+  solaris_house:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        -
+          subnet: 172.25.100.0/24
+
+
