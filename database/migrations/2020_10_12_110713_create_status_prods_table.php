@@ -14,7 +14,10 @@ class CreateStatusProdsTable extends Migration
     public function up()
     {
         Schema::create('status_prods', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
+            $table->integer('prod_id')->unsigned();
+            $table->string('situation');
+            $table->foreign('prod_id')->references('id')->on('products')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class StatusProd extends Model
 {
-    //
+    protected $fillable = ['situation'];
 }
