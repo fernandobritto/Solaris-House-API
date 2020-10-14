@@ -19,8 +19,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $var = $this->categ->all();
-        return response()->json($var);
+        $var = $this->categ->paginate(10);
+        return response()->json($var, 200);
     }
 
     /**
@@ -31,8 +31,17 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $var = $this->categ->create($request->all());
-        return response()->json($var);
+        try {
+            $var = $this->categ->create($request->all());
+            return response()->json(['data' => [
+                'msg' => 'Category successfully registered!',
+                'category' => $var
+            ], 200]);
+
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+			return response()->json($message, 401);
+        }
     }
 
     /**
@@ -43,8 +52,14 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $var = $this->categ->findOrFail($id);
-        return response()->json($var);
+        try {
+            $var = $this->categ->findOrFail($id);
+            return response()->json(['data' => $var], 200);
+
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+			return response()->json($message, 401);
+        }
     }
 
     /**
@@ -56,7 +71,21 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $data = $request->all();
 
+        try {
+            $var = $this->categ->findOrFail($id);
+            $var->update($data);
+
+            return response()->json(['data' => [
+                'msg' => 'Category updated successfully!',
+                'update on' => $var
+            ]],200);
+
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+			return response()->json($message, 401);
+        }
     }
 
     /**
@@ -67,7 +96,16 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $this->categ->destroy($id);
-        return response()->json(['data' => 'excluded product']);
+        try {
+            $var = $this->categ->findOrFail($id);
+            $var->destroy($id);
+            return response()->json(['data' => [
+                'msg' => 'Category removed successfully!'
+            ]], 200);
+
+        } catch (\Exception $e) {
+            $message = $e->getMessage();
+			return response()->json($message, 401);
+        }
     }
 }
