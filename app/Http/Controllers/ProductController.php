@@ -36,8 +36,8 @@ class ProductController extends Controller
         try {
             $product = $this->prod->create($data);
 
-            if(isset($data['category']) && count($data['category'])){
-                $product->category()->sync($data['category']);
+            if(isset($data['categories']) && count($data['categories'])){
+                $product->product()->sync($data['categories']);
             }
 
             return response()->json(['data' => [
